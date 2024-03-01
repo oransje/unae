@@ -42,6 +42,6 @@ spec = do
                 describe "when is not a recognized symbol" $ do
                     it "throws an error" $ do
                          evaluate (scan "+-") `shouldThrow` anyErrorCall
-                describe "when the lexe is not a digit" $ do
+                describe "when the lexeme is not a digit" $ do
                     it "throws an error" $ do
                          evaluate (scan "flamengooo") `shouldThrow` anyErrorCall
