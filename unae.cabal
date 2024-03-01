@@ -59,6 +59,7 @@ test-suite unae-test
   main-is: Main.hs
   other-modules:
       LexerSpec
+      ParserSpec
       Spec
       Paths_unae
   autogen-modules:
