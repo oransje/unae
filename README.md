@@ -1,6 +1,6 @@
 # unae
 
-Untyped arithmetic expressions interpreter as describe by Benjamin Pierce
+Untyped arithmetic expressions interpreter as describe by Benjamin Pierce.
 
 ## Setup
 
