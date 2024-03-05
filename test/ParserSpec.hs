@@ -1,10 +1,36 @@
 module ParserSpec (spec) where
 
 import Test.Hspec
+
 import Parser
 
 spec :: Spec
 spec = do
+    describe "parse" $ do
+        describe "when tokens are values" $ do
+            it "parses the units of tokens" $ do
+                expectationFailure "Not implemented"
+
+        describe "when tokens are conditions" $ do
+            it "parses if-then-else" $ do
+                expectationFailure "Not implemented"
+
+            describe " with nested conditioning" $ do
+                it "parses nested if-then-else" $ do
+                    expectationFailure "Not implemented"
+
+        describe "when the function is succ" $ do
+            it "parses the structure of successor" $ do
+                expectationFailure "Not implemented"
+        
+        describe "when the function is pred" $ do
+            it "parses the structure of predecessor" $ do
+                expectationFailure "Not implemented"
+        
+        describe "when the function is isZero?" $ do
+            it "parses the structure of function isZero" $ do
+                expectationFailure "Not implemented"
+        
     describe "isNumericVal" $ do
         it "asserts term zero as numeric" $ do
             isNumericVal TmZero `shouldBe` True
