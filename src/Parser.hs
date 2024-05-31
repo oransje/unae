@@ -4,6 +4,7 @@ module Parser
     , isNumericVal
     , isVal) where
 
+import Data.Word (Word8)
 import Control.Applicative ((<|>))
 
 import Lexer (Token(..))
@@ -16,7 +17,7 @@ data Term
     | TmSucc Term
     | TmPred Term
     | TmIsZero Term
-    deriving ( Show )
+    deriving ( Show, Eq )
 
 isNumericVal :: Term -> Bool
 isNumericVal TmZero = True
@@ -54,24 +55,52 @@ parseFalse (F : rest) = Just (TmFalse, rest)
 parseFalse _ = Nothing
 
 parseIf :: [Token] -> Maybe (Term, [Token])
-parseIf (IF : rest) = undefined
-parseIf (THEN: rest) = undefined
-parseIf (ELSE: rest) = undefined
+parseIf (IF : rest) =
+    case parseUnit rest of
+        Just (cond, THEN : rest') ->
+            case parseUnit rest' of
+                Just (thenBranch, ELSE : rest'') ->
+                    case parseUnit rest'' of
+                        Just (elseBranch, rest''') ->
+                            Just (TmIf cond thenBranch elseBranch, rest''')
+                        _ -> Nothing
+                _ -> Nothing
+        _ -> Nothing
+parseIf _ = Nothing
 
 parseZero :: [Token] -> Maybe (Term, [Token])
-parseZero (ZERO: rest) = undefined
+parseZero (ZERO: rest) = Just (TmZero, rest)
+parseZero _ = Nothing
 
-parseDigit :: [Token] -> Maybe (Term, [Token]) -- TODO: turn all digits in TmSucc in relation to TmZero form
-parseDigit (DIGIT d: rest) = undefined
+parseDigit :: [Token] -> Maybe (Term, [Token])
+parseDigit (DIGIT d: rest) = Just (numberInSucc d, rest)
+parseDigit _ = Nothing
+
+numberInSucc :: Word8 -> Term
+numberInSucc 0 = TmZero
+numberInSucc i = TmSucc (numberInSucc (i-1))
 
 parsePred :: [Token] -> Maybe (Term, [Token])
-parsePred (PRED: rest) = undefined
+parsePred (PRED : rest) = 
+    case parseUnit rest of
+        Just (t, rest') -> Just (TmPred t, rest')
+        _ -> Nothing
+parsePred _ = Nothing
 
 parseIsZero :: [Token] -> Maybe (Term, [Token])
-parseIsZero (ISZERO: rest) = undefined
+parseIsZero (ISZERO : rest) = 
+    case parseUnit rest of
+        Just (t, rest') -> Just (TmIsZero t, rest')
+        _ -> Nothing
+parseIsZero _ = Nothing
 
 parseParens :: [Token] -> Maybe (Term, [Token])
-parseParens (ZERO: rest) = undefined
+parseParens (LPAREN : rest) = 
+    case parseUnit rest of
+        Just (t, RPAREN : rest') -> Just (t, rest')
+        _ -> Nothing
+parseParens _ = Nothing
 
 parseSemicolon :: [Token] -> Maybe (Term, [Token])
-parseSemicolon (ZERO: rest) = undefined
+parseSemicolon (SEMICOLON : rest) = parseUnit rest
+parseSemicolon _ = Nothing
